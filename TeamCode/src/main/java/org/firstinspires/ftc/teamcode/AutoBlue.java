@@ -23,6 +23,5 @@ public class AutoBlue extends Auto2017Methods {
         stop();
 
     }
-
-
+    
 }
