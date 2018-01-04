@@ -1,16 +1,44 @@
+/* Copyright (c) 2017 FIRST. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted (subject to the limitations in the disclaimer below) provided that
+ * the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list
+ * of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this
+ * list of conditions and the following disclaimer in the documentation and/or
+ * other materials provided with the distribution.
+ *
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or
+ * promote products derived from this software without specific prior written permission.
+ *
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**
- * Created by Rithv on 12/26/2017.
- */
-
-public class Tele2017Robot {
-  // Declare OpMode members.
+@TeleOp(name="TeleOp", group="Iterative Opmode")
+//@Disabled
+public class Tele2017Robot extends OpMode {
+    // Declare OpMode members.
     //private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
     private DcMotor rightFront = null;
@@ -89,9 +117,10 @@ public class Tele2017Robot {
         telemetry.addData("mR2", rightBack.getCurrentPosition());
         telemetry.addData("mL1", leftFront.getCurrentPosition());
         telemetry.addData("mL2", leftBack.getCurrentPosition());
+        autoJewel.setPosition(.2);
 
         if (reversed) {
-            if (gamepad2.left_bumper) {
+            if (gamepad1.right_stick_button) {
                 rightFront.setPower(right / 3);
                 leftFront.setPower(left / 3);
                 rightBack.setPower(right / 3);
@@ -103,7 +132,7 @@ public class Tele2017Robot {
                 leftBack.setPower(left);
             }
         } else if (!reversed) {
-            if (gamepad2.left_bumper) {
+            if (gamepad1.right_stick_button) {
                 rightFront.setPower(-left / 3);
                 leftFront.setPower(-right / 3);
                 rightBack.setPower(-left / 3);
@@ -228,13 +257,7 @@ public class Tele2017Robot {
 
     public double motorPower(double joy1) {
         double[] values = {0.0, 0.15, 0.35, 0.55, 0.65, 0.85, 1.0};
-        double sign;
-
-        if(joy1 < 0) {
-            sign = -1.0;
-        } else {
-            sign = 1.0;
-        }
+        double sign = joy1/Math.abs(joy1);
 
         if(Math.abs(joy1) < values[1]) {
             return 0;
@@ -251,8 +274,6 @@ public class Tele2017Robot {
         } else {
             return sign*1.0;
         }
-
-
     }
     /*
      * Code to run ONCE after the driver hits STOP
@@ -262,5 +283,3 @@ public class Tele2017Robot {
     }
 }
 
-  
-}
