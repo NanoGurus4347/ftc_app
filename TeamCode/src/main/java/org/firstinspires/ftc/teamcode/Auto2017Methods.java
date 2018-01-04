@@ -1,30 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
-
 import android.text.InputFilter;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -42,7 +17,6 @@ import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -64,7 +38,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import java.util.Locale;
 
 /**
- * Created by Rithv on 12/26/2017.
+ * Created by vaish on 11/14/2017.
  */
 
 //Vuforia License
@@ -80,7 +54,6 @@ public class Auto2017Methods extends LinearOpMode {
     DcMotor leftBack = null;
     DcMotor rightBack = null;
     DcMotor collection = null;
-    DcMotor ScoopUp = null;
     DcMotor delivery = null;
     DcMotor flip = null;
     DcMotor slide = null;
@@ -91,14 +64,10 @@ public class Auto2017Methods extends LinearOpMode {
 
     //sensors
     ModernRoboticsI2cColorSensor colorR;
-    IntegratingGyroscope gyro;
-    ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     ColorSensor line;
     BNO055IMU imu;
     ModernRoboticsI2cRangeSensor rangeA;
-    ModernRoboticsI2cRangeSensor rangeB;
     //I2cDeviceSynch rangeAreader;
-
 
     //variables
     private double circum = 4 * Math.PI;
@@ -131,8 +100,6 @@ public class Auto2017Methods extends LinearOpMode {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         collection = hardwareMap.get(DcMotor.class, "clt");
-        ScoopUp = hardwareMap.get(DcMotor.class, "Scup");
-
         delivery = hardwareMap.get(DcMotor.class, "dlv");
         flip = hardwareMap.get(DcMotor.class, "flp");
         slide = hardwareMap.get(DcMotor.class, "sld");
@@ -141,11 +108,7 @@ public class Auto2017Methods extends LinearOpMode {
         stopper = hardwareMap.get(Servo.class, "stp");
         autoJewel = hardwareMap.get(Servo.class, "auto");
 
-
         colorR = (ModernRoboticsI2cColorSensor) hardwareMap.get("colorR");
-        modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        gyro = modernRoboticsI2cGyro;
-
         line = hardwareMap.colorSensor.get("line");
 
         line.enableLed(true);
@@ -414,7 +377,7 @@ public class Auto2017Methods extends LinearOpMode {
 
 
                 if (colDif > 1) {
-                    // in case of red move forward
+                    // in case of blue move forward
                     telemetry.addData("ball:", "blue");
                     telemetry.update();
                     sleep(1000);
@@ -537,23 +500,26 @@ public class Auto2017Methods extends LinearOpMode {
 
     public int vuScoreia (double timeout) {
         double timeI = getRuntime();
+        int ret = 0;
         while(opModeIsActive()) {
             if(getRuntime() > timeI + timeout) {
                 break;
             }
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 switch  (vuMark) {
                     case LEFT:
                         telemetry.addData("Score", "Left Col");
-                        return 0;
+                        ret = 0;
+                        break;
                     case CENTER:
                         telemetry.addData("Score", "Center Col");
-                        return 1;
+                        ret = 1;
+                        break;
                     case RIGHT:
                         telemetry.addData("Score", "Right Col");
-                        return 2;
+                        ret = 2;
+                        break;
                 }
                 telemetry.addData("seen", vuMark);
             }
@@ -562,7 +528,7 @@ public class Auto2017Methods extends LinearOpMode {
             }
             telemetry.update();
         }
-        return 0;
+        return ret;
     }
 
     String formatAngle(AngleUnit angleUnit, double angle) {
