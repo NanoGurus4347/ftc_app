@@ -98,8 +98,7 @@ public class Auto2017Methods extends LinearOpMode {
     ModernRoboticsI2cRangeSensor rangeA;
     ModernRoboticsI2cRangeSensor rangeB;
     //I2cDeviceSynch rangeAreader;
-    int duration;
-    int power;
+
 
     //variables
     private double circum = 4 * Math.PI;
